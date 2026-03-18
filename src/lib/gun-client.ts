@@ -38,11 +38,14 @@ export function getGun(): GunInstance {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Gun = require("gun");
     require("gun/sea");
+    require("gun/axe");
     _gun = Gun;
     _db = Gun({
       peers: DEFAULT_PEERS,
       localStorage: true,
-      radisk: false, // client — no filesystem
+      radisk: true, // Persist chunks in the browser (LevelDB fallback in IDB)
+      axe: true,    // Enable smart P2P routing (Phase 2 mandate)
+      multicast: false,
     });
   }
   return _gun;

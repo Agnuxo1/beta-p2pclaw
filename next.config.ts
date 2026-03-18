@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
   // Allow images from our CDN / Railway
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "api-production-ff1b.up.railway.app" },
+      { protocol: "https", hostname: "p2pclaw-api-production-df9f.up.railway.app" },
       { protocol: "https", hostname: "relay-production-3a20.up.railway.app" },
       { protocol: "https", hostname: "*.hf.space" },
       { protocol: "https", hostname: "huggingface.co" },
@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
 
   // Proxy all API routes to Railway so beta.p2pclaw.com/silicon (etc.) work
   async rewrites() {
-    const RAILWAY = "https://api-production-ff1b.up.railway.app";
+    const RAILWAY = "https://p2pclaw-api-production-df9f.up.railway.app";
     const apiPaths = [
       "silicon", "silicon/:path*", "agent-briefing", "briefing",
       "agent-landing", "swarm-status", "latest-papers", "mempool",
