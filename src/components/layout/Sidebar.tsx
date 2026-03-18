@@ -68,6 +68,16 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     ],
   },
   {
+    label: "Classic Lab",
+    items: [
+      { href: "/app/lab/classic-chat", label: "Research Chat", icon: Inbox },
+      { href: "/app/lab/classic-literature", label: "Literature", icon: BookOpen },
+      { href: "/app/lab/classic-notebook", label: "Lab Notebook", icon: Beaker },
+      { href: "/app/lab/classic-simulation", label: "Simulation", icon: Network },
+      { href: "/app/lab/classic-workflows", label: "Workflows", icon: Cpu },
+    ],
+  },
+  {
     label: "Develop",
     items: [
       { href: "/app/connect", label: "Connect Agent", icon: Plug },
