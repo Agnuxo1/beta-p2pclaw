@@ -5,13 +5,25 @@ import { BookOpen, Search, Filter, HardDrive, RefreshCw } from "lucide-react";
 
 export default function LiteraturePage() {
   const [sweepActive, setSweepActive] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [papers, setPapers] = useState<any[]>([]);
 
-  const mockPapers = [
-    { title: "Quantum Multi-Agent Reinforcement Learning", cid: "QmX7...8y9A", source: "IPFS Network", refs: 142 },
-    { title: "Fluid Dynamics in Non-Euclidean Spaces", cid: "QmZ3...9b2Z", source: "OSF Archive", refs: 89 },
-    { title: "Autonomous Scientific Discovery Protocols", cid: "QmP1...4c1X", source: "ArXiv Mirror", refs: 312 },
-  ];
-
+  const handleSweep = async () => {
+    if (sweepActive) return;
+    setSweepActive(true);
+    
+    try {
+      const response = await fetch(`/api/lab/literature?q=${encodeURIComponent(searchTerm || 'distributed intelligence')}`);
+      if (!response.ok) throw new Error("API Error");
+      
+      const data = await response.json();
+      setPapers(data.papers);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSweepActive(false);
+    }
+  };
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex items-start justify-between">
@@ -23,30 +35,25 @@ export default function LiteraturePage() {
             OSF-inspired automated semantic sweeping. Agents can trigger deep reads across 1,500+ decentralized papers instantly, extracting hypotheses and citations into the mempool.
           </p>
         </div>
-        <button 
-          onClick={() => setSweepActive(!sweepActive)}
-          className={`px-4 py-2 flex items-center gap-2 font-mono text-xs font-bold rounded-lg transition-colors border ${
-            sweepActive ? "bg-[#ff4e1a]/20 text-[#ff4e1a] border-[#ff4e1a]/50" : "bg-[#4caf82] text-[#0c0c0d] border-transparent hover:bg-[#4caf82]/90"
-          }`}
-        >
-          <RefreshCw className={`w-4 h-4 ${sweepActive ? 'animate-spin' : ''}`} />
-          {sweepActive ? "HALT DEEP SWEEP" : "INITIATE DEEP SWEEP"}
-        </button>
       </div>
 
-      <div className="flex gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-3 w-4 h-4 text-[#52504e]" />
+      <div className="flex gap-2">
           <input 
             type="text" 
-            placeholder="Search academic corpus (CID, title, Author DID)..." 
-            className="w-full bg-[#1a1a1c] border border-[#2c2c30] rounded-lg pl-10 pr-4 py-2.5 font-mono text-sm text-[#f5f0eb] focus:border-[#ff4e1a] focus:outline-none transition-colors"
+            placeholder="Enter research topic (e.g. 'P2P networks', 'LLM agents')..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-1 bg-black border border-[#2d2d2d] rounded px-3 py-2 font-mono text-sm focus:outline-none focus:border-[#ff4e1a]/50 text-[#cecbc8]"
           />
+          <button 
+            onClick={handleSweep}
+            disabled={sweepActive}
+            className={`px-4 py-2 font-mono text-sm font-bold flex items-center gap-2 rounded transition-all ${sweepActive ? 'bg-[#52504e] cursor-not-allowed text-gray-400' : 'bg-[#ff4e1a] text-black hover:shadow-[0_0_15px_rgba(255,78,26,0.3)]'}`}
+          >
+            <Search className="w-4 h-4" />
+            {sweepActive ? "SWEEPING..." : "INITIATE DEEP SWEEP"}
+          </button>
         </div>
-        <button className="px-4 py-2 border border-[#2c2c30] rounded-lg bg-[#1a1a1c] flex items-center gap-2 text-[#9a9490] hover:text-[#f5f0eb] hover:border-[#52504e] transition-colors">
-          <Filter className="w-4 h-4" /> <span className="font-mono text-sm">Filters</span>
-        </button>
-      </div>
 
       {sweepActive && (
         <div className="p-4 border border-[#ff4e1a]/30 bg-[#ff4e1a]/5 rounded-lg">
@@ -60,23 +67,25 @@ export default function LiteraturePage() {
       )}
 
       <div className="border border-[#2c2c30] rounded-xl overflow-hidden bg-[#0c0c0d]">
-        <div className="grid grid-cols-12 gap-4 p-4 border-b border-[#2c2c30] bg-[#1a1a1c] font-mono text-xs text-[#52504e] font-semibold tracking-wider uppercase">
-          <div className="col-span-6">Manuscript Title</div>
-          <div className="col-span-3">IPFS CID</div>
-          <div className="col-span-2">Source</div>
-          <div className="col-span-1 text-right">Refs</div>
-        </div>
         <div className="divide-y divide-[#2c2c30]">
-          {mockPapers.map((p, i) => (
-            <div key={i} className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-[#1a1a1c]/50 transition-colors">
-              <div className="col-span-6 font-mono text-sm text-[#f5f0eb]">{p.title}</div>
-              <div className="col-span-3 font-mono text-xs text-[#ff4e1a] break-all">{p.cid}</div>
-              <div className="col-span-2 flex items-center gap-2 text-[10px] font-mono text-[#9a9490]">
-                <HardDrive className="w-3 h-3 text-[#52504e]" /> {p.source}
-              </div>
-              <div className="col-span-1 text-right font-mono text-xs text-[#4caf82]">{p.refs}</div>
-            </div>
-          ))}
+              {papers.map((paper, idx) => (
+                <div key={idx} className="p-3 border border-[#2d2d2d] hover:border-[#ff4e1a]/30 transition-colors group cursor-pointer">
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className="font-mono text-xs text-[#cecbc8] group-hover:text-[#ff4e1a] transition-colors line-clamp-1">{paper.title}</h3>
+                    <span className="text-[10px] text-[#4caf82] bg-[#4caf82]/10 px-1 border border-[#4caf82]/20">REAL-TIME</span>
+                  </div>
+                  <p className="text-[10px] text-[#9a9490] line-clamp-2 mb-2">{paper.abstract}</p>
+                  <div className="flex justify-between items-center text-[10px] font-mono text-[#52504e]">
+                    <span>{paper.author}</span>
+                    <span>{paper.date}</span>
+                  </div>
+                </div>
+              ))}
+              {papers.length === 0 && !sweepActive && (
+                <div className="text-center py-10 border border-dashed border-[#2d2d2d]">
+                  <p className="font-mono text-[10px] text-[#52504e]">NO RESEARCH DATA HYDRATED. INITIATE SWEEP.</p>
+                </div>
+              )}
         </div>
       </div>
     </div>

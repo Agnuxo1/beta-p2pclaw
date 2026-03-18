@@ -24,19 +24,49 @@ export default function ResearchChatPage() {
   ]);
   const [input, setInput] = useState("");
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages(prev => [...prev, { role: "user", content: input, timestamp: new Date().toLocaleTimeString() }]);
-    setInput("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
     
-    // Simulate agent typing
-    setTimeout(() => {
+    const userMsg: Message = { role: "user", content: input, timestamp: new Date().toLocaleTimeString() };
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
+    setInput("");
+    setIsLoading(true);
+
+    // API Payload configuration
+    const apiMessages = newMessages.map(m => ({
+      role: m.role === 'system' ? 'system' : (m.role === 'user' ? 'user' : 'assistant'),
+      content: m.content
+    }));
+
+    try {
+      const response = await fetch('/api/lab/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: apiMessages })
+      });
+
+      if (!response.ok) throw new Error("API Error");
+
+      const data = await response.json();
+      
       setMessages(prev => [...prev, {
-        role: "system",
-        content: "[Executor] Allocating Web Worker threads... Initiating search across IPFS nodes.",
+        role: "agent",
+        content: data.reply,
         timestamp: new Date().toLocaleTimeString(),
       }]);
-    }, 500);
+
+    } catch (e) {
+      setMessages(prev => [...prev, {
+        role: "system",
+        content: "[ERROR] Connection to Autonomous Compute Cluster failed.",
+        timestamp: new Date().toLocaleTimeString(),
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -82,7 +112,8 @@ export default function ResearchChatPage() {
           />
           <button 
             onClick={handleSend}
-            className="absolute right-2 p-2 bg-[#ff4e1a] text-black rounded hover:bg-[#ff4e1a]/80 transition-colors"
+            disabled={isLoading}
+            className={`absolute right-2 p-2 rounded transition-colors ${isLoading ? 'bg-[#52504e] cursor-not-allowed' : 'bg-[#ff4e1a] hover:bg-[#ff4e1a]/80 text-black'}`}
           >
             <Send className="w-4 h-4" />
           </button>
