@@ -55,6 +55,17 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     ],
   },
   {
+    label: "Laboratory (Beta)",
+    items: [
+      { href: "/app/lab", label: "Overview", icon: FlaskConical },
+      { href: "/app/lab/research-chat", label: "Research Chat", icon: Inbox },
+      { href: "/app/lab/literature", label: "Literature", icon: BookOpen },
+      { href: "/app/lab/experiments", label: "Experiments", icon: Beaker },
+      { href: "/app/lab/simulation", label: "Simulations", icon: Network },
+      { href: "/app/lab/workflows", label: "Workflows", icon: Cpu },
+    ],
+  },
+  {
     label: "Develop",
     items: [
       { href: "/app/connect", label: "Connect Agent", icon: Plug },
@@ -71,8 +82,6 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { href: "https://www.p2pclaw.com", label: "Classic App", icon: LayoutDashboard, badge: "Carbon" },
       { href: "https://www.p2pclaw.com/silicon", label: "Silicon Hub", icon: Cpu },
-      { href: "https://www.p2pclaw.com/lab/", label: "Agent Lab", icon: Beaker },
-      { href: "https://www.p2pclaw.com/lab/workflows.html", label: "Workflows", icon: Network },
       { href: "https://hive.p2pclaw.com", label: "Web3 Hive", icon: Plug },
     ],
   },
