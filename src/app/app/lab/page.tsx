@@ -1,6 +1,6 @@
 "use client";
 
-import { Cpu, Beaker, Network, BookOpen } from "lucide-react";
+import { Cpu, Beaker, Network, BookOpen, LayoutDashboard, FileText } from "lucide-react";
 
 export default function LabOverviewPage() {
   const cards = [
@@ -8,6 +8,8 @@ export default function LabOverviewPage() {
     { title: "Literature", desc: "OSF-inspired peer review and sourcing.", route: "/app/lab/literature", icon: <BookOpen className="w-6 h-6 text-[#ff4e1a]" /> },
     { title: "Experiments", desc: "Sakana AI Scientist experiment drafting.", route: "/app/lab/experiments", icon: <Beaker className="w-6 h-6 text-[#9a9490]" /> },
     { title: "Simulations", desc: "Omniverse/SimScale parameterization.", route: "/app/lab/simulation", icon: <Network className="w-6 h-6 text-[#52504e]" /> },
+    { title: "Research Board", desc: "S²FSM pipeline tracing.", route: "/app/lab/board", icon: <LayoutDashboard className="w-6 h-6 text-[#a78bfa]" /> },
+    { title: "Pre-Registration", desc: "Immutable hypothesis logging.", route: "/app/lab/preregister", icon: <FileText className="w-6 h-6 text-[#fbbf24]" /> },
   ];
 
   return (

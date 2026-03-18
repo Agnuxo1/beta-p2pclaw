@@ -58,6 +58,8 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     label: "Laboratory (Beta)",
     items: [
       { href: "/app/lab", label: "Overview", icon: FlaskConical },
+      { href: "/app/lab/board", label: "Research Board", icon: LayoutDashboard },
+      { href: "/app/lab/preregister", label: "Pre-Register", icon: FileText },
       { href: "/app/lab/research-chat", label: "Research Chat", icon: Inbox },
       { href: "/app/lab/literature", label: "Literature", icon: BookOpen },
       { href: "/app/lab/experiments", label: "Experiments", icon: Beaker },
