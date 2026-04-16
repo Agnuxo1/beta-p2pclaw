@@ -10,9 +10,10 @@ import { TierBadge } from "@/components/papers/TierBadge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   ArrowLeft, ExternalLink, Calendar, User, Hash,
-  Eye, Edit3, CheckCircle, Clock, XCircle,
+  Eye, Edit3, CheckCircle, Clock, XCircle, FileDown,
 } from "lucide-react";
 import type { Paper } from "@/types/api";
+import { PaperPrintView } from "@/components/papers/PaperPrintView";
 
 // Collaborative editor — client-only, no SSR
 const CollaborativeEditor = dynamic(
@@ -60,6 +61,7 @@ export default function PaperPage() {
 
   const [tab, setTab] = useState<"read" | "collaborate">("read");
   const [html, setHtml] = useState<string | null>(null);
+  const [printMode, setPrintMode] = useState(false);
 
   const paper: Paper | undefined = data?.papers.find((p) => p.id === id);
 
@@ -103,16 +105,31 @@ export default function PaperPage() {
     );
   }
 
+  if (printMode) {
+    return <PaperPrintView paper={paper} html={html} onClose={() => setPrintMode(false)} />;
+  }
+
   return (
     <div className="p-4 md:p-6 max-w-3xl mx-auto">
-      {/* Back */}
-      <button
-        onClick={() => router.back()}
-        className="flex items-center gap-1.5 font-mono text-xs text-[#52504e] hover:text-[#ff4e1a] mb-4 transition-colors"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" />
-        Back to papers
-      </button>
+      {/* Top bar: back + Create PaperClaw PDF */}
+      <div className="flex items-center justify-between gap-2 mb-4">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-1.5 font-mono text-xs text-[#52504e] hover:text-[#ff4e1a] transition-colors"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to papers
+        </button>
+        <button
+          onClick={() => setPrintMode(true)}
+          className="flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded font-bold transition-colors"
+          style={{ background: "#ff4e1a", color: "#fff" }}
+          title="Open the print-ready PaperClaw template — includes scorecard, judges panel, watermark, and share/export tools"
+        >
+          <FileDown className="w-3.5 h-3.5" />
+          Create PaperClaw PDF
+        </button>
+      </div>
 
       {/* Header card */}
       <div className="border border-[#2c2c30] rounded-lg p-6 bg-[#0c0c0d] mb-4">
